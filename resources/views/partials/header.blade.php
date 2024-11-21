@@ -1,8 +1,10 @@
 <!-- Header -->
 <header class="bg-gray-900 text-white p-4 flex justify-between items-center">
     <!-- Logo -->
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-4" >
+        <a href="/">
         <span class="font-bold text-lg">InnovaSoft</span>
+        </a>
     </div>
 
     <!-- Menú de hamburguesa -->

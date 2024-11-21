@@ -19,6 +19,6 @@
 
     <!-- Footer -->
     @include('partials.footer')
-
+    <script src="//code.tidio.co/ltnojin2icondmiivcm8dykssyymqx8o.js" async></script>
 </body>
 </html>

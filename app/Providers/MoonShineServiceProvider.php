@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Resources\OptionsResource;
+use App\MoonShine\Resources\QuestionsResource;
+use App\MoonShine\Resources\QuizzesResource;
 use App\MoonShine\Resources\SubtemasResource;
 use App\MoonShine\Resources\TemasResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
@@ -16,6 +19,8 @@ use MoonShine\Contracts\Resources\ResourceContract;
 use MoonShine\Menu\MenuElement;
 use MoonShine\Pages\Page;
 use Closure;
+use MoonShine\Commands\MakePageCommand;
+use MoonShine\Components\Url;
 
 class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
 {
@@ -53,8 +58,15 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
             ]),
 
             MenuItem::make("Temas", new TemasResource),
-            MenuItem::make("Subtemas", new SubtemasResource)
+            MenuItem::make("Subtemas", new SubtemasResource),
+            
+            MenuGroup::make("Quizzes", [
+                MenuItem::make("Quizz", new QuizzesResource),
+                MenuItem::make("Preguntas", new QuestionsResource),
+                MenuItem::make("Opciones", new OptionsResource),
+            ]),
 
+            MenuItem::make("Ir al Inicio" , url("/")),
             
         ];
     }
