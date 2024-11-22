@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\questions;
+use App\Models\quizzes;
 use App\Models\Temas;
 use Illuminate\Http\Request;
 
@@ -28,6 +30,53 @@ class HomeController extends Controller
         return view('temas.show', compact('info_modulo', 'subtemas')); 
     }
     
+    public function showQuiz($id)
+    {
+        // Obtener el quiz asociado con el tema
+        $quiz = quizzes::where('tema_id', $id)->firstOrFail();
+        
+        // Obtener el nombre del tema relacionado con el quiz
+        $tema = $quiz->tema; // Asumiendo que tienes la relación 'tema' definida en el modelo Quizzes
+        
+        // Obtener las preguntas y opciones del quiz
+        $questions = $quiz->questions()->with('options')->get();
+    
+        // Obtener el ID de la primera pregunta del quiz
+        $firstQuestionId = $quiz->questions()->first()->id; 
+    
+        // Retornar la vista con el quiz, las preguntas y el ID de la primera pregunta
+        return view('quizz.show', compact('quiz', 'questions', 'firstQuestionId'));
+    }
+    
+    public function showQuestion($quizId, $questionId)
+{
+    // Obtener el quiz por ID
+    $quiz = quizzes::findOrFail($quizId);
 
+    // Obtener todas las preguntas asociadas al quiz en orden
+    $questions = $quiz->questions()->orderBy('id')->get();
+
+    // Obtener la pregunta actual
+    $question = $quiz->questions()->findOrFail($questionId);
+
+    // Obtener el índice actual de la pregunta en la lista
+    $currentIndex = $questions->search(function ($q) use ($question) {
+        return $q->id === $question->id;
+    }) + 1; // +1 porque queremos un índice basado en 1
+
+    // Total de preguntas
+    $totalQuestions = $questions->count();
+
+    // Obtener la siguiente pregunta (si existe)
+    $nextQuestion = $questions->get($currentIndex) ?? null; // Si no existe, será null
+
+    // Obtener las opciones de la pregunta actual
+    $options = $question->options;
+
+    // Retornar la vista con los datos necesarios
+    return view('quizz.question', compact('quiz', 'question', 'options', 'currentIndex', 'totalQuestions', 'nextQuestion'));
+}
+
+    
 
 }

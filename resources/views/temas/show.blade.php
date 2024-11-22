@@ -8,7 +8,7 @@
     <!-- Left Side: Title -->
     <div class="md:w-1/3 mt-2">
       <h1 class="text-sm text-indigo-600 font-semibold mt-1">Tema</h1>
-      <h2 class="text-2xl font-extrabold text-gray-900 mt-2">Frequently Asked Questions</h2>
+      <h2 class="text-2xl font-extrabold text-gray-900 mt-2">{{ $info_modulo->titulo }}</h2>
       <p class="mt-4 text-gray-600 text-justify">{{ $info_modulo->descripcion }}</p>
 
       <!-- Slider -->
@@ -67,7 +67,7 @@
 
       <div class="flex justify-between items-center mt-8">
         <div class="flex gap-x-3">
-          <a href="javascript:void(0)" class="block py-2 px-4 text-center text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg hover:shadow-none">
+          <a href="{{ route('quiz.show', $info_modulo->id) }}" class="block py-2 px-4 text-center text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg hover:shadow-none">
             Ir al Quizizz
           </a>
           <a href="javascript:void(0)" class="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg md:inline-flex">
@@ -88,5 +88,3 @@
   accordion.classList.toggle('hidden');
 }
 </script>
-
-

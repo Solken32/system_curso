@@ -9,4 +9,13 @@ class options extends Model
 {
     use HasFactory;
     protected $fillable = ["question_id","opcion","correcta"];
+     // Relación inversa, una opción pertenece a una pregunta
+     public function question()
+     {
+        return $this->belongsTo(questions::class, 'question_id');
+     }
+
+     
+
+
 }

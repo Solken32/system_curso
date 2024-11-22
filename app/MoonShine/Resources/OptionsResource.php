@@ -50,6 +50,13 @@ class OptionsResource extends ModelResource
                 ->options(questions::all()->pluck('pregunta', 'id')->toArray())  // Obtén todos los temas y sus títulos
                 ->required(),  // Hazlo obligatorio si es necesario
                 Text::make('Opcion'),
+                Select::make('¿Es correcta?', 'correcta')
+                ->options([
+                    1 => 'Correcto',   // Opción para correcto
+                    0 => 'Incorrecto', // Opción para incorrecto
+                ])
+                ->default(0), // Valor predeterminado, en este caso "Incorrecto"
+                
             ]),
         ];
     }
