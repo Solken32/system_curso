@@ -45,7 +45,6 @@
     <!-- Right Side: Accordions -->
     <div class="md:w-2/3 p-10  rounded-lg shadow-xl">
       <h3 class="text-black-100 font-semibold pb-6 text-center">Subtemas</h3>
-
       <div class="space-y-6">
         @foreach($subtemas as $subtema)
           <!-- Accordion Item -->
@@ -57,7 +56,7 @@
               <span>{{ $loop->iteration }}. {{ $subtema->titulo }}</span>
               <span class="text-xl text-indigo-600 font-bold hover:text-white">+</span>
             </button>
-            <div id="accordion{{ $loop->iteration }}" class="hidden mt-4 text-gray-600">
+            <div id="accordion{{ $loop->iteration }}" class="hidden mt-4 text-gray-500 ">
               <p class="text-gray-600 mb-4 text-justify">{{ $subtema->descripcion }}</p>
               <img src="{{ asset('storage/' . $subtema->imagen) }}" alt="Descripción de la imagen" class="w-full h-64 object-contain rounded-lg shadow-md mx-auto mb-6">
             </div>
@@ -65,15 +64,11 @@
         @endforeach
       </div>
 
-      <div class="flex justify-between items-center mt-8">
-        <div class="flex gap-x-3">
-          <a href="{{ route('quiz.show', $info_modulo->id) }}" class="block py-2 px-4 text-center text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg hover:shadow-none">
-            Ir al Quizizz
-          </a>
-          <a href="javascript:void(0)" class="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg md:inline-flex">
-            Favorito
-          </a>
-        </div>
+      <div class="flex justify-end pt-6">
+        <a href="{{ route('quiz.show', $info_modulo->id) }}" class="text-center bg-purple-800 text-white w-full font-bold text-base  p-3 rounded-lg hover:bg-purple-900 active:scale-95 transition-transform transform">Ir al Quizizz</a>
+      </div>
+      <div class="flex justify-end pt-3">
+        <button class="bg-blue-800 text-white w-full font-bold text-base  p-3 rounded-lg hover:bg-blue-900 active:scale-95 transition-transform transform">Favoritos</button>
       </div>
     </div>
   </div>

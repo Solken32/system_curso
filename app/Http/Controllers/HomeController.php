@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\questions;
 use App\Models\quizzes;
+use App\Models\subtemas;
 use App\Models\Temas;
 use Illuminate\Http\Request;
 
@@ -87,6 +88,25 @@ class HomeController extends Controller
         return view('quizz.question', compact('quiz', 'question', 'options', 'currentIndex', 'totalQuestions', 'nextQuestion','isFirstQuestion','isLastQuestion'));
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+
+        // Buscar en la tabla 'temas'
+        $temas = Temas::where('titulo', 'like', '%' . $query . '%')
+                    ->orWhere('descripcion', 'like', '%' . $query . '%')
+                    ->get();
+
+        // Buscar en la tabla 'subtemas'
+        $subtemas = subtemas::where('titulo', 'like', '%' . $query . '%')
+                        ->orWhere('descripcion', 'like', '%' . $query . '%')
+                        ->get();
+
+        // Unir los resultados de temas y subtemas en un solo array
+        $resultados = $temas->merge($subtemas);
+
+        return response()->json($resultados);
+    }
     
 
 }
