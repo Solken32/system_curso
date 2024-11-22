@@ -49,33 +49,43 @@ class HomeController extends Controller
     }
     
     public function showQuestion($quizId, $questionId)
-{
-    // Obtener el quiz por ID
-    $quiz = quizzes::findOrFail($quizId);
+    {
+        // Obtener el quiz por ID
+        $quiz = quizzes::findOrFail($quizId);
 
-    // Obtener todas las preguntas asociadas al quiz en orden
-    $questions = $quiz->questions()->orderBy('id')->get();
+        // Obtener todas las preguntas asociadas al quiz en orden
+        $questions = $quiz->questions()->orderBy('id')->get();
 
-    // Obtener la pregunta actual
-    $question = $quiz->questions()->findOrFail($questionId);
+        // Obtener la pregunta actual
+        $question = $quiz->questions()->findOrFail($questionId);
 
-    // Obtener el índice actual de la pregunta en la lista
-    $currentIndex = $questions->search(function ($q) use ($question) {
-        return $q->id === $question->id;
-    }) + 1; // +1 porque queremos un índice basado en 1
+        // Obtener el índice actual de la pregunta en la lista
+        $currentIndex = $questions->search(function ($q) use ($question) {
+            return $q->id === $question->id;
+        }) + 1; // +1 porque queremos un índice basado en 1
 
-    // Total de preguntas
-    $totalQuestions = $questions->count();
+        // Total de preguntas
+        $totalQuestions = $questions->count();
 
-    // Obtener la siguiente pregunta (si existe)
-    $nextQuestion = $questions->get($currentIndex) ?? null; // Si no existe, será null
+        // Obtener la siguiente pregunta (si existe)
+        $nextQuestion = $questions->get($currentIndex) ?? null; // Si no existe, será null
 
-    // Obtener las opciones de la pregunta actual
-    $options = $question->options;
+        // Obtener las opciones de la pregunta actual
+        $options = $question->options;
 
-    // Retornar la vista con los datos necesarios
-    return view('quizz.question', compact('quiz', 'question', 'options', 'currentIndex', 'totalQuestions', 'nextQuestion'));
-}
+        // Obtener el ID de la primera pregunta en el quiz
+        $firstQuestionId = $questions->first()->id;
+
+        // Determinar si la pregunta actual es la primera
+        $isFirstQuestion = ($questionId == $firstQuestionId);
+    
+        // Determinar si es la última pregunta
+        $isLastQuestion = ($currentIndex === $totalQuestions);
+
+
+        // Retornar la vista con los datos necesarios
+        return view('quizz.question', compact('quiz', 'question', 'options', 'currentIndex', 'totalQuestions', 'nextQuestion','isFirstQuestion','isLastQuestion'));
+    }
 
     
 

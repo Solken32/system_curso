@@ -5,12 +5,15 @@
 
 @section('content-quizz')
 
+<!-- Botón para salir del quiz -->
+<button id="exit-button" class="absolute top-8 left-11 text-white text-xl cursor-pointer">
+    <span class="material-icons">close</span> <!-- Icono X -->
+</button>
+
     <!-- Contenedor principal, dividido en dos columnas en pantallas grandes, apilado en pantallas pequeñas -->
-    <div class="w-full h-full max-w-7xl bg-[#181b43] p-6 rounded-xl shadow-lg flex flex-col lg:flex-row">
-        
+    <div id="quiz-container" class="w-full h-full max-w-7xl bg-[#181b43] p-6 rounded-xl shadow-lg flex flex-col lg:flex-row" data-first-question="{{ $isFirstQuestion ? 'true' : 'false' }}">    
         <!-- Contenedor de la pregunta y opciones (lado izquierdo) -->
-        <div class="w-full lg:w-1/2 flex flex-col justify-between text-white mb-6 lg:mb-0">
-            
+        <div class="w-full lg:w-1/2 flex flex-col justify-between text-white mb-6 lg:mb-0">        
             <!-- Temporizador y puntuación -->
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-2">
@@ -21,9 +24,7 @@
                     <span >Pregunta {{ $currentIndex }} de {{ $totalQuestions }}</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <span class="text-xl">❤️</span>
-                    <span class="text-xl">❤️</span>
-                    <span class="text-xl">❤️</span>
+                    Puntuación : <span id="score"> 0</span> / {{ $totalQuestions * 20 }}    
                 </div>
             </div>
 
@@ -35,21 +36,21 @@
             <!-- Opciones -->
             <div class="space-y-4 flex-1 flex flex-col justify-center">
                 @foreach($options as $option)
-                    <button class="w-full py-4 bg-white text-black rounded-lg shadow-lg hover:bg-gray-300 transition duration-300">
+                    <button 
+                        class="option-button w-full py-4 bg-white text-black rounded-lg shadow-lg hover:bg-gray-300 transition duration-300"
+                        data-correct="{{ $option->correcta }}">
                         {{ $option->opcion }}
                     </button>
                 @endforeach
-                
             </div>
-        
-            @if($nextQuestion)
-                <a href="{{ route('quizz.question', ['quizId' => $quiz->id, 'questionId' => $nextQuestion->id]) }}" 
-                    class="w-full py-4 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition duration-300 text-center block">
-                    Siguiente pregunta
-                </a>
-            @else
-                <p class="text-center text-white mt-4">¡Has completado el quiz!</p>
-            @endif
+            
+            <!-- Botón siguiente pregunta, inicialmente oculto -->
+            <a href="{{ $nextQuestion ? route('quizz.question', ['quizId' => $quiz->id, 'questionId' => $nextQuestion->id]) : '#' }}" 
+                id="next-button"
+                class="w-full py-4 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition duration-300 text-center block mt-4 hidden">
+                {{ $isLastQuestion ? 'Culminar Quiz' : 'Siguiente pregunta' }}
+            </a>
+            <p id="feedback" class="text-center text-white mt-4 hidden"></p>
         </div>
 
         <!-- Contenedor de la imagen (lado derecho) -->
@@ -60,6 +61,81 @@
     </div> 
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.option-button');
+            const feedback = document.getElementById('feedback');
+            const nextButton = document.getElementById('next-button');
+            const scoreElement = document.getElementById('score');
+            // Restablecer puntaje si es la primera pregunta
+            const isFirstQuestion = document.getElementById('quiz-container').getAttribute('data-first-question') === 'true';
+
+            if (isFirstQuestion) {
+                resetScore();
+            }
+            // Recuperar el puntaje acumulado desde localStorage (o iniciar en 0 si no existe)
+            let score = parseInt(localStorage.getItem('quizScore')) || 0;
+            scoreElement.textContent = score; // Mostrar el puntaje actual
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Verificar si la respuesta es correcta
+                    const isCorrect = this.getAttribute('data-correct') === '1';
+
+                      // Pintar la opción seleccionada
+                    this.classList.add(isCorrect ? 'bg-blue-500' : 'bg-red-500');
+                    this.classList.remove('bg-white');
+                    this.classList.add('text-white');
+
+                    // Deshabilitar todos los botones
+                    buttons.forEach(btn => btn.disabled = true);
+
+                    // Mostrar retroalimentación
+                    feedback.textContent = isCorrect ? '¡Correcto!' : 'Incorrecto';
+                    feedback.classList.remove('hidden');
+                    feedback.classList.add(isCorrect ? 'text-green-500' : 'text-red-500');
+
+                    // Incrementar la puntuación si es correcto
+                    if (isCorrect) {
+                        score += 20; // Incrementar por 20 puntos
+                        localStorage.setItem('quizScore', score); // Guardar el puntaje en localStorage
+                        scoreElement.textContent = score; // Actualizar visualmente la puntuación
+                    }
+
+                    // Habilitar el botón de siguiente pregunta
+                    nextButton.classList.remove('hidden');
+                });
+            });
+            // Función para restablecer el puntaje
+            function resetScore() {
+                localStorage.removeItem('quizScore');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const exitButton = document.getElementById('exit-button');
+
+            // Mostrar SweetAlert2 cuando el usuario haga clic en el botón de salida
+            exitButton.addEventListener('click', () => {
+                Swal.fire({
+                    title: '¿Estás seguro de salir?',
+                    text: 'Si sales del quiz, perderás el progreso.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Salir',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Si el usuario confirma, redirigir al tema anterior
+                        window.location.href = "/"; // Cambia esto con la URL del tema anterior
+                    }
+                });
+            });
+        });
+
+
+        
+
         // Temporizador
         let timeLeft = 2 * 60 + 14; // 2:14 en segundos
         const timerElement = document.getElementById("timer");

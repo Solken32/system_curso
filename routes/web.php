@@ -18,6 +18,7 @@ Route::get('/quizzes/{quizId}/questions/{questionId}', [HomeController::class, '
 
 
 
+
 Route::get('/temas', function () {
     return view('temas.tema');
 });

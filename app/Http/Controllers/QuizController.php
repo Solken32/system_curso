@@ -21,6 +21,7 @@ class QuizController extends Controller
 
         // Buscar la siguiente pregunta si existe
         $nextQuestion = questions::where('id', '>', $questionId)->first();
+        
 
         // Retornar la vista con el quiz, la pregunta y las opciones
         return view('quiz.question', compact('quiz', 'question', 'options', 'nextQuestion'));
