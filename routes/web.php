@@ -17,7 +17,7 @@ Route::get('/quizzes/{quizId}/questions/{questionId}', [HomeController::class, '
 Route::get('/search-temas', [HomeController::class, 'search'])->name('search.temas');
 
 Route::get('/inicio', function () {
-    return view('inicio'); // Reemplaza 'nombre_de_la_vista' con el nombre del archivo Blade (sin extensión .blade.php)
+    return view('inicio'); 
 });
 
 
